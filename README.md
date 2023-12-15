@@ -1,1 +1,1 @@
-# github-repo-app
+# GitHub Repo-App
