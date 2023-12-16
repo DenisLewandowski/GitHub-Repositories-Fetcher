@@ -1,0 +1,16 @@
+services:
+  app-1:
+    image: "github-repo-app:latest"
+  app-2:
+    image: "github-repo-app:latest"
+
+  loadbalancer-nginx:
+    image: nginx:1.23.4
+    depends_on:
+      - app-1
+      - app-2
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./local-loadbalancer-nginx.conf:/etc/nginx/conf.d/local-loadbalancer-nginx.conf
+

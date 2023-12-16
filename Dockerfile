@@ -1,5 +1,7 @@
 FROM amazoncorretto:17.0.9
 
-COPY ./build/app.jar .
+WORKDIR /app
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+COPY ./build/libs/github-repo-app-*.jar ./app/github-repo-app.jar
+
+ENTRYPOINT [ "java", "-jar", "./app/github-repo-app.jar" ]
