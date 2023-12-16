@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class GithubRepoAppApplication
+class GithubRepoApplication
 
 fun main(args: Array<String>) {
-	runApplication<GithubRepoAppApplication>(*args)
+	runApplication<GithubRepoApplication>(*args)
 }
