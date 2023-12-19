@@ -1,3 +1,3 @@
 package pl.dlsoftware.githubrepoapp.exception
 
-class GitHubHttpRequestFailedException(statusCode: Int, message: String) : RuntimeException(message)
+class GitHubHttpRequestFailedException(val statusCode: Int, val errorMessage: String) : RuntimeException(errorMessage)
