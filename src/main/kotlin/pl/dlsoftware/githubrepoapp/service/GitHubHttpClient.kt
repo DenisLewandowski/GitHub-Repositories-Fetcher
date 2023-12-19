@@ -10,7 +10,9 @@ import java.net.http.HttpResponse
 import org.springframework.stereotype.Component
 import pl.dlsoftware.githubrepoapp.config.GitHubConfigurationProperties
 import pl.dlsoftware.githubrepoapp.dto.github.GitHubBranchResponse
+import pl.dlsoftware.githubrepoapp.dto.github.GitHubErrorResponse
 import pl.dlsoftware.githubrepoapp.dto.github.GitHubRepositoryResponse
+import pl.dlsoftware.githubrepoapp.exception.GitHubHttpRequestFailedException
 
 @Component
 class GitHubHttpClient(
@@ -32,12 +34,19 @@ class GitHubHttpClient(
     }
 
     private fun makeGetRequest(endpoint: String): HttpResponse<String> {
-        return httpClient.send(HttpRequest.newBuilder()
+        val response = httpClient.send(HttpRequest.newBuilder()
             .uri(URI.create("${githubConfig.host}$endpoint"))
             .GET()
             .headers(*createHeader())
             .build(), HttpResponse.BodyHandlers.ofString()
         )
+
+        if (response.statusCode() != 200) {
+            val message = mapper.readValue<GitHubErrorResponse>(response.body()).message
+            throw GitHubHttpRequestFailedException(response.statusCode(), message)
+        }
+
+        return response
     }
 
     private fun createHeader(): Array<String> {
