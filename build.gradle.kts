@@ -21,7 +21,8 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-configuration-processor")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("io.github.cdimascio:java-dotenv:5.2.2")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.3")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
