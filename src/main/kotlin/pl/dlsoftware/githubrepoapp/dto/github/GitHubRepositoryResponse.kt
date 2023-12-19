@@ -1,4 +1,4 @@
-package pl.dlsoftware.githubrepoapp.dto
+package pl.dlsoftware.githubrepoapp.dto.github
 
 data class GitHubRepositoryResponse(
     val name: String,
