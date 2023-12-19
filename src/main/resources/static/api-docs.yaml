@@ -1,0 +1,105 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Server for local development
+paths:
+  /api/v1/github/repos/{username}:
+    get:
+      tags:
+      - GitHub Controller
+      summary: Returns all not forked GitHub repositories for given username
+      operationId: getUserGithubRepositories
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful request. It returns all not forked GitHub user's repositories with branches.
+            details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRepositoriesResponse'
+        "404":
+          description: Returns when the username does not exists in the GitHub.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "406":
+          description: Returns when different than 'application/json' Accept header is sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 406
+                message: No acceptable representation
+components:
+  schemas:
+    RepositoryBranch:
+      required:
+      - lastCommitSha
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: A name of the branch
+          example: feat/cool-feature
+        lastCommitSha:
+          type: string
+          description: A latest commit SHA from the branch
+          example: 37bda959f0fde8b8348502073bb21d861ad324a2
+      description: A list of branches within the repository
+    UserRepositoriesResponse:
+      required:
+      - ownerLogin
+      - repositories
+      type: object
+      properties:
+        ownerLogin:
+          type: string
+          description: The GitHub username
+          example: DenisLewandowski
+        repositories:
+          type: array
+          description: The list of repositories belonging to the user
+          items:
+            $ref: '#/components/schemas/UserRepository'
+    UserRepository:
+      required:
+      - branches
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: A name of the repository
+          example: cool-repo-name
+        branches:
+          type: array
+          description: A list of branches within the repository
+          items:
+            $ref: '#/components/schemas/RepositoryBranch'
+      description: The list of repositories belonging to the user
+    ErrorResponse:
+      required:
+        - status
+        - message
+      type: object
+      properties:
+        status:
+          type: number
+          description: The HTTP Status code of the response
+          example: 404
+        message:
+          type: string
+          description: A message describing the error
+          example: The user is not found

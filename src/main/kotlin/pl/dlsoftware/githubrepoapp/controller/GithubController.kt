@@ -36,6 +36,6 @@ class GithubController(
         return ResponseEntity
             .status(exception.statusCode)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(ErrorResponse(exception.statusCode.value(), exception.message ?: ""))
+            .body(ErrorResponse(exception.statusCode.value(), exception.message))
     }
 }
