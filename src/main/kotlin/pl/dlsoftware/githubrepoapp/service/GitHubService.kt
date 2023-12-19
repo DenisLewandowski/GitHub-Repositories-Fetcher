@@ -12,6 +12,7 @@ class GitHubService(
 
     fun getRepositoriesByUsernameNoForks(username: String): UserRepositoriesResponse {
         val userRepositories = gitHubHttpClient.getRepositories(username)
+            .filter { !it.fork }
             .parallelStream()
             .map { repository ->
                 val branches = gitHubHttpClient.getBranches(username, repository.name)
