@@ -1,5 +1,5 @@
 #!/bin/bash
 
-./gradlew build -x test
-docker build -t github-repo-app .
+./gradlew build -p app -x test
+docker build -t github-repo-app ./app
 docker-compose up -d
