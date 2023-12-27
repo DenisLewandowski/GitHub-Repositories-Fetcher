@@ -41,6 +41,28 @@ paths:
               example:
                 status: 406
                 message: No acceptable representation
+
+  /actuator/health:
+    get:
+      tags:
+        - Health Check Controller
+      summary: Returns the current health status of the application
+      operationId: getApplicationHealth
+      responses:
+        "200":
+          description: It is returned when application is in the UP state and it is ready to process requests.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: 'UP'
+        "503":
+          description: It is returned when application is in the DOWN state and it is out of a service.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: 'DOWN'
 components:
   schemas:
     RepositoryBranch:
