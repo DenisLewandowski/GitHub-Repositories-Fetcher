@@ -41,6 +41,13 @@ paths:
               example:
                 status: 406
                 message: No acceptable representation
+      x-amazon-apigateway-integration:
+        type: 'http_proxy'
+        httpMethod: 'GET'
+        uri: 'http://${stageVariables.albUri}/api/v1/github/repos/{username}'
+        requestParameters:
+          integration.request.path.username: "method.request.path.username"
+        payloadFormatVersion: 1.0
 
   /actuator/health:
     get:
@@ -63,6 +70,11 @@ paths:
               schema:
                 example:
                   status: 'DOWN'
+      x-amazon-apigateway-integration:
+        type: 'http_proxy'
+        httpMethod: 'GET'
+        uri: 'http://${stageVariables.albUri}/actuator/health'
+        payloadFormatVersion: 1.0
 components:
   schemas:
     RepositoryBranch:

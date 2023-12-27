@@ -2,6 +2,9 @@ package pl.dlsoftware.cdk
 
 import software.amazon.awscdk.Stack
 import software.amazon.awscdk.StackProps
+import software.amazon.awscdk.services.apigateway.ApiDefinition
+import software.amazon.awscdk.services.apigateway.SpecRestApi
+import software.amazon.awscdk.services.apigateway.StageOptions
 import software.amazon.awscdk.services.ec2.Vpc
 import software.amazon.awscdk.services.ecr.Repository
 import software.amazon.awscdk.services.ecs.Cluster
@@ -46,5 +49,14 @@ class CdkStack constructor(
         loadBalancedEcsApp.targetGroup.configureHealthCheck(HealthCheck.builder()
             .path("/actuator/health")
             .build())
+
+        SpecRestApi.Builder.create(this, "SpecRestApi")
+            .restApiName("GitHubApplicationRestApi")
+            .deployOptions(StageOptions.builder()
+                .variables(mutableMapOf("albUri" to loadBalancedEcsApp.loadBalancer.loadBalancerDnsName))
+                .build())
+            .apiDefinition(ApiDefinition.fromAsset("./../app/src/main/resources/static/api-docs.yaml"))
+            .deploy(true)
+            .build()
     }
 }
