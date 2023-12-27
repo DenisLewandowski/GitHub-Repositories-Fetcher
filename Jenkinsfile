@@ -2,11 +2,16 @@ pipeline {
 
     agent any
 
+    tools {
+        gradle '8.5'
+    }
+
     stages {
 
         stage('build') {
             steps {
                 echo 'Building GitHub Repo Application...'
+                sh 'gradle build -x test'
             }
         }
 
