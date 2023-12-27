@@ -1,5 +1,10 @@
 plugins {
     kotlin("jvm") version "1.9.20"
+    application
+}
+
+application {
+    mainClass.set("pl.dlsoftware.cdk.CdkApp")
 }
 
 dependencies {

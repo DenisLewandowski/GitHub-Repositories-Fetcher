@@ -2,7 +2,7 @@
 
 This application exposes REST API which provides GitHub user repositories data
 
-## Running the app
+## Running the app locally
 
 ### Prerequisites:
 
@@ -20,3 +20,21 @@ The scrip build the application using `Gradle` and then run `docker-compose` whi
 of the application and the loadbalancer to spread request between instances.
 
 The application is by default exposed on the port `8080`
+
+
+## Running the app on AWS
+
+There is IaaC subproject `cdk` which utilizes AWS CDK.
+To bootstrap the base infrastructure on a new AWS account you have to run:
+
+`cdk bootstrap --profile <you-aws-profile>`
+
+then you should synthesize running:
+
+`cdk synth --profile <you-aws-profile>`
+
+and finally 
+
+`cdk deploy --profile <you-aws-profile>`
+
+to create ECR repository and ECS cluster

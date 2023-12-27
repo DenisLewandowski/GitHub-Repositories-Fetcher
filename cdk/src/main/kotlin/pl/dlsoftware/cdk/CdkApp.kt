@@ -2,11 +2,14 @@ package pl.dlsoftware.cdk
 
 import software.amazon.awscdk.App
 
-object CdkApp {
-    @JvmStatic
-    fun main(args: Array<String>) {
-        val app = App()
-        CdkStack(app, "CdkStack")
-        app.synth()
+class CdkApp: App() {
+
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            val app = CdkApp()
+            CdkStack(app, "GitHubRepoApplicationStack")
+            app.synth()
+        }
     }
 }
