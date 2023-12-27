@@ -29,7 +29,7 @@ pipeline {
         stage('deploy') {
             steps {
                 echo 'Deploying GitHub Repo Application...'
-                echo "$GIT_COMMIT"
+                sh 'COMMIT_HASH=$(echo "$GIT_COMMIT" | cut -c 1-8)'
                 //TODO sh 'cdk synth --profile <you-aws-profile>'
                 //TODO sh 'cdk deploy GitHubRepoBaseStack --profile <you-aws-profile>'
                 //TODO sh 'aws ecr get-login-password --region us-east-1 --profile <you-aws-profile> | docker login --username AWS --password-stdin <ecr-url>'
