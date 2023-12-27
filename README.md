@@ -22,19 +22,42 @@ of the application and the loadbalancer to spread request between instances.
 The application is by default exposed on the port `8080`
 
 
-## Running the app on AWS
+## Deployment of the app on AWS manually
+
+### Prerequisites:
+
+- JDK17
+- Gradle
+- Docker
+- AWS CLI & AWS CDK
+- GitHub token
 
 There is IaaC subproject `cdk` which utilizes AWS CDK.
 To bootstrap the base infrastructure on a new AWS account you have to run:
 
 `cdk bootstrap --profile <you-aws-profile>`
 
-then you should synthesize running:
+Then you should create CloudFormation templates:
 
 `cdk synth --profile <you-aws-profile>`
 
-and finally 
+Create the VPC and the ECR repository
 
-`cdk deploy --profile <you-aws-profile>`
+`cdk deploy GitHubRepoBaseStack --profile <you-aws-profile>`
 
-to create ECR repository and ECS cluster
+Then build and push the docker image to newly created ECR repository:
+
+`aws ecr get-login-password --region us-east-1 --profile <you-aws-profile> | docker login --username AWS --password-stdin <ecr-url>`
+
+`./gradlew clean build -x test`
+
+`docker build -t github-repo-app:latest ./app`
+
+`docker tag github-repo-app:latest <ecr-url>:latest`
+
+`docker push <ecr-url>:latest`
+
+
+Finally, deploy the application to the ECR:
+
+`cdk deploy GitHubRepoApplicationStack --profile <you-aws-profile>`

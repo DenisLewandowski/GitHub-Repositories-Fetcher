@@ -14,21 +14,14 @@ import software.amazon.awscdk.services.ecs.patterns.ApplicationLoadBalancedTaskI
 import software.amazon.awscdk.services.elasticloadbalancingv2.HealthCheck
 import software.constructs.Construct
 
-class CdkStack constructor(
+class GitHubRepoApplicationStack constructor(
     parent: Construct,
     id: String?,
+    vpc: Vpc,
+    ecr: Repository,
     props: StackProps? = null) : Stack(parent, id, props) {
 
     init {
-        val vpc = Vpc.Builder.create(this, "GitHubApplicationVpc")
-            .maxAzs(3)
-            .build()
-
-        val ecrRepository = Repository.Builder
-            .create(this, "GitHubApplicationRepository")
-            .repositoryName("github-application-repository")
-            .build()
-
         val cluster = Cluster.Builder.create(this, "GitHubApplicationCluster")
             .vpc(vpc)
             .build()
@@ -40,7 +33,7 @@ class CdkStack constructor(
             .memoryLimitMiB(512)
             .desiredCount(2)
             .taskImageOptions(ApplicationLoadBalancedTaskImageOptions.builder()
-                .image(ContainerImage.fromEcrRepository(ecrRepository))
+                .image(ContainerImage.fromEcrRepository(ecr))
                 .containerPort(8080)
                 .build())
             .publicLoadBalancer(true)
@@ -48,6 +41,7 @@ class CdkStack constructor(
 
         loadBalancedEcsApp.targetGroup.configureHealthCheck(HealthCheck.builder()
             .path("/actuator/health")
+            .healthyThresholdCount(3)
             .build())
 
         SpecRestApi.Builder.create(this, "SpecRestApi")

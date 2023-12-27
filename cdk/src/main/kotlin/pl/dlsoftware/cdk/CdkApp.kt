@@ -8,7 +8,8 @@ class CdkApp: App() {
         @JvmStatic
         fun main(args: Array<String>) {
             val app = CdkApp()
-            CdkStack(app, "GitHubRepoApplicationStack")
+            val baseStack = GitHubRepoBaseStack(app, "GitHubRepoBaseStack")
+            GitHubRepoApplicationStack(app, "GitHubRepoApplicationStack", baseStack.vpc, baseStack.ecr)
             app.synth()
         }
     }
