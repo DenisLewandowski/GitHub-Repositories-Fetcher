@@ -9,11 +9,11 @@ This application exposes REST API which provides GitHub user repositories data
 - JDK17
 - Gradle
 - Docker
-- GitHub token
+- GitHub token (Optional)
 
 ### How to run
-First, you have to provide environment variable `GITHUB_TOKEN` with your generated GitHub token.
-You can also provide it as default in the resources/application.yml file.
+First, you can provide environment variable `GITHUB_TOKEN` with your generated GitHub token.
+You can also provide it as default in the resources/application.yml file. It's not necessary though.
 
 To run the application locally you can run `run-local.sh` script.
 The scrip build the application using `Gradle` and then run `docker-compose` which contains 2 instances 

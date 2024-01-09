@@ -1,58 +1,42 @@
 package pl.dlsoftware.app.service
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 import pl.dlsoftware.app.config.GitHubConfigurationProperties
 import pl.dlsoftware.app.dto.github.GitHubBranchResponse
-import pl.dlsoftware.app.dto.github.GitHubErrorResponse
 import pl.dlsoftware.app.dto.github.GitHubRepositoryResponse
-import pl.dlsoftware.app.exception.GitHubHttpRequestFailedException
+import reactor.core.publisher.Mono
 
 @Component
 class GitHubHttpClient(
     private val githubConfig: GitHubConfigurationProperties
 ) {
 
-    private val httpClient = HttpClient.newHttpClient()
-    private val mapper = jacksonObjectMapper()
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    private val webClient = WebClient.builder()
+        .baseUrl(githubConfig.host)
+        .defaultHeader("X-GitHub-Api-Version", githubConfig.version)
+        .applyBearerTokenIfProvided()
+        .build()
 
-    fun getRepositories(username: String): List<GitHubRepositoryResponse> {
-        val response = makeGetRequest("/users/$username/repos")
-        return mapper.readValue(response.body())
+    fun getRepositories(username: String): Mono<List<GitHubRepositoryResponse>> {
+        return webClient.get()
+            .uri("/users/$username/repos")
+            .retrieve()
+            .bodyToMono()
     }
 
-    fun getBranches(username: String, repositoryName: String): List<GitHubBranchResponse> {
-        val response = makeGetRequest("/repos/$username/$repositoryName/branches")
-        return mapper.readValue(response.body())
+    fun getBranches(username: String, repositoryName: String): Mono<List<GitHubBranchResponse>> {
+        return webClient.get()
+            .uri("/repos/$username/$repositoryName/branches")
+            .retrieve()
+            .bodyToMono()
     }
 
-    private fun makeGetRequest(endpoint: String): HttpResponse<String> {
-        val response = httpClient.send(HttpRequest.newBuilder()
-            .uri(URI.create("${githubConfig.host}$endpoint"))
-            .GET()
-            .headers(*createHeader())
-            .build(), HttpResponse.BodyHandlers.ofString()
-        )
-
-        if (response.statusCode() != 200) {
-            val message = mapper.readValue<GitHubErrorResponse>(response.body()).message
-            throw GitHubHttpRequestFailedException(response.statusCode(), message)
+    private fun WebClient.Builder.applyBearerTokenIfProvided(): WebClient.Builder {
+        if (githubConfig.token.isNotEmpty()) {
+            this.defaultHeader("Authorization", "Bearer ${githubConfig.token}")
         }
-
-        return response
-    }
-
-    private fun createHeader(): Array<String> {
-        return arrayOf(
-            "Authorization", "Bearer ${githubConfig.token}",
-            "X-GitHub-Api-Version", githubConfig.version
-        )
+        return this
     }
 }

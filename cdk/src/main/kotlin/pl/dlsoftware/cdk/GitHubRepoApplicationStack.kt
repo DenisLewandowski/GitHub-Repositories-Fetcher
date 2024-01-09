@@ -49,7 +49,7 @@ class GitHubRepoApplicationStack constructor(
             .deployOptions(StageOptions.builder()
                 .variables(mutableMapOf("albUri" to loadBalancedEcsApp.loadBalancer.loadBalancerDnsName))
                 .build())
-            .apiDefinition(ApiDefinition.fromAsset("./../app/src/main/resources/static/api-docs.yaml"))
+            .apiDefinition(ApiDefinition.fromAsset("./../app/src/main/resources/static/swagger.yaml"))
             .deploy(true)
             .build()
     }

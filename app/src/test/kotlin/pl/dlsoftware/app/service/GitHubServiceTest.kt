@@ -7,6 +7,7 @@ import org.mockito.Mockito
 import pl.dlsoftware.app.dto.github.GitHubBranchResponse
 import pl.dlsoftware.app.dto.github.GitHubCommitResponse
 import pl.dlsoftware.app.dto.github.GitHubRepositoryResponse
+import reactor.core.publisher.Mono
 
 internal class GitHubServiceTest {
 
@@ -17,9 +18,9 @@ internal class GitHubServiceTest {
     fun `getRepositoriesByUsernameNoForks - happy path`() {
         val username = "username"
         val responses = createRepositoryResponses()
-        Mockito.`when`(gitHubHttpClient.getRepositories(username)).thenReturn(responses)
-        Mockito.`when`(gitHubHttpClient.getBranches(username, "repo-1")).thenReturn(listOf(createBranchResponse("repo-1", "sha-1")))
-        Mockito.`when`(gitHubHttpClient.getBranches(username, "repo-2")).thenReturn(listOf(createBranchResponse("repo-2", "sha-2")))
+        Mockito.`when`(gitHubHttpClient.getRepositories(username)).thenReturn(Mono.just(responses))
+        Mockito.`when`(gitHubHttpClient.getBranches(username, "repo-1")).thenReturn(Mono.just(listOf(createBranchResponse("repo-1", "sha-1"))))
+        Mockito.`when`(gitHubHttpClient.getBranches(username, "repo-2")).thenReturn(Mono.just(listOf(createBranchResponse("repo-2", "sha-2"))))
 
         val result = gitHubService.getRepositoriesByUsernameNoForks(username)
 

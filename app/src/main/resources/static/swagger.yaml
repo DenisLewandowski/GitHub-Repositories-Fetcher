@@ -40,7 +40,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
                 status: 406
-                message: No acceptable representation
+                Message: No acceptable representation
       x-amazon-apigateway-integration:
         type: 'http_proxy'
         httpMethod: 'GET'
@@ -126,14 +126,14 @@ components:
     ErrorResponse:
       required:
         - status
-        - message
+        - Message
       type: object
       properties:
         status:
           type: number
           description: The HTTP Status code of the response
           example: 404
-        message:
+        Message:
           type: string
           description: A message describing the error
           example: The user is not found
