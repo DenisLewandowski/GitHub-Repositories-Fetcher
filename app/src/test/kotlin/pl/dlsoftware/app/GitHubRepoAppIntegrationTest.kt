@@ -46,7 +46,7 @@ class GitHubRepoAppIntegrationTest {
         )
 
         assertEquals(404, response.statusCode())
-        assertEquals("{\"status\":404,\"message\":\"Not Found\"}", response.body())
+        assertEquals("{\"status\":404,\"Message\":\"Not Found\"}", response.body())
     }
 
     @Test
@@ -60,6 +60,6 @@ class GitHubRepoAppIntegrationTest {
         )
 
         assertEquals(406, response.statusCode())
-        assertEquals("{\"status\":406,\"message\":\"No acceptable representation\"}", response.body())
+        assertEquals("{\"status\":406,\"Message\":\"No acceptable representation\"}", response.body())
     }
 }
